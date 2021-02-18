@@ -42,7 +42,27 @@ function showNotification() {
   }, 2000);
 }
 
-function updateWrongLettersEl() {}
+function updateWrongLettersEl() {
+  wrongLettersEl.innerHTML = `
+    ${wrongLetters.length > 0 ? '<p>Wrong</p>' : ''}
+    ${wrongLetters.map((letter) => `<span>${letter}</span>`)}
+  `;
+
+  figureParts.forEach((part, index) => {
+    const errors = wrongLetters.length;
+
+    if (index < errors) {
+      part.style.display = 'block';
+    } else {
+      part.style.display = 'none';
+    }
+  });
+
+  if (wrongLetters.length === figureParts.length) {
+    finalMessage.innerText = 'Unfortunately you lost. 😕';
+    popup.style.display = 'flex';
+  }
+}
 
 window.addEventListener('keydown', (e) => {
   if (e.code >= 'KeyA' && e.code <= 'KeyZ') {
@@ -64,6 +84,17 @@ window.addEventListener('keydown', (e) => {
       }
     }
   }
+});
+
+playAgainBtn.addEventListener('click', () => {
+  correctLetters.splice(0);
+  wrongLetters.splice(0);
+
+  selectedWord = words[Math.floor(Math.random() * words.length)];
+  displayWord();
+
+  updateWrongLettersEl();
+  popup.style.display = 'none';
 });
 
 displayWord();
